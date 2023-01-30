@@ -103,6 +103,8 @@ class simCLR:
     
     def save_model(self,file_name):
         torch.save(self.model.state_dict(),file_name)
+        print("Model saved")
     
     def load_model(self,file_name):
         self.model.load_state_dict(torch.load(file_name))
+        print("Model loaded")

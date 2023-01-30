@@ -9,17 +9,13 @@ from simclr import simCLR
 
 config = {
     "lr": 1e-3,
-    "temperature": 1,
+    "temperature": 0.5,
     "batch_size": 64,
     "epochs": 1,
     'num_features':128
 }
 
-answers = torch.load('simclr_sanity_check.key')
 simclr = simCLR(config)
+simclr.load_model('trained_simclr.pth')
 train_data, val_data, test_data = get_data(config["batch_size"])
 simclr.train(train_data)
-
-def err(x,y):
-    x = np.max(np.abs(x - y) / (np.maximum(1e-8, np.abs(x) + np.abs(y))))
-    print(f"Maximum error in data augmentation:{x:.9} ")
