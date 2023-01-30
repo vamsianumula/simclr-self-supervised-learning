@@ -2,4 +2,4 @@ numpy
 pandas
 matplotlib
 torch
-matplotlib
+torchvision==0.10.0

@@ -1,2 +1,3 @@
-simclr/
 __pycache__/
+data/
+checkpoints/

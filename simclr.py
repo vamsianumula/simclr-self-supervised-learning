@@ -7,7 +7,7 @@ import numpy as np
 
 class BaseEncoder(nn.Module):
     def __init__(self, feature_dim=128):
-        super(simCLR, self).__init__()
+        super(BaseEncoder, self).__init__()
 
         self.f = []
         for name, module in resnet50().named_children():
@@ -43,7 +43,7 @@ class simCLR:
     def __init__(self, config):
         self.lr = config['lr']
         self.temp = config['temperature']
-        self.epoch = config['epoch']
+        self.epochs = config['epochs']
         self.batch_size = config['batch_size']
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.model  = BaseEncoder(config['num_features'])
@@ -65,7 +65,7 @@ class simCLR:
         r = out_right/torch.linalg.norm(out_right,dim=1,keepdim=True)
         x = torch.sum(l*r,dim=1,keepdim=True)
         x = torch.cat([x,x],dim=0).to(self.device)
-        numerator = (x/self.tau).exp().to(self.device)
+        numerator = (x/self.temp).exp().to(self.device)
         
         return torch.sum(-torch.log(numerator / denom) / (2*N)) 
     
@@ -79,7 +79,7 @@ class simCLR:
 
             _,out_left = self.model(x_i)
             _,out_right = self.model(x_j)
-            loss = self.simclr_loss(out_left,out_right, self.temp, device=self.device)
+            loss = self.simclr_loss(out_left,out_right)
             
             self.optim.zero_grad()
             loss.backward()
